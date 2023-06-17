@@ -1,4 +1,3 @@
-run:
-	air main.go
-
 .PHONY: run
+run:
+	air -c air.toml
