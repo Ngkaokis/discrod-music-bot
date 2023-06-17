@@ -12,15 +12,21 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var (config util.Config)
+
+func init() {
+	var err error
+	config ,err  = util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("Can not Load the Config File")
+	}
+}
 
 
 func main() {
 
 	// Create a new Discord session using the provided bot token.
-	config ,err := util.LoadConfig(".")
-	if err != nil {
-		log.Fatal("Can not Load the Config File")
-	}
+
 	dg, err := discordgo.New("Bot " + config.Token_String)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
@@ -30,8 +36,10 @@ func main() {
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(handler.MessageCreateHandler)
 
+	dg.AddHandler(handler.MusicPlayerHandler)
+
 	// In this example, we only care about receiving message events.
-	dg.Identify.Intents = discordgo.IntentsGuildMessages
+	dg.Identify.Intents = discordgo.IntentsGuildMessages + discordgo.IntentsGuildVoiceStates
 
 	// Open a websocket connection to Discord and begin listening.
 	err = dg.Open()
