@@ -9,7 +9,6 @@ import (
 
 	"log"
 
-	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -40,8 +39,8 @@ func MusicPlayerHandler(bot *discordgo.Session, message *discordgo.MessageCreate
 		}
 		
 		
-		dgvoice.PlayAudioFile(vc,"data/1689458200-57NboSm4CJU.opus.mp3",make(chan bool))
-		defer  vc.Disconnect()
+		// dgvoice.PlayAudioFile(vc,"",make(chan bool))
+		// defer  vc.Disconnect()
 	}
 	
 	// Ignore all messages created by the bot itself
