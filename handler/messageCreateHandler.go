@@ -1,6 +1,11 @@
 package handler
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"discord-bot/util"
+	"fmt"
+
+	"github.com/bwmarrin/discordgo"
+)
 
 // This function will be called (due to AddHandler above) every time a new
 // message is created on any channel that the authenticated bot has access to.
@@ -19,5 +24,10 @@ func MessageCreateHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// If the message is "pong" reply with "Ping!"
 	if m.Content == "pong" {
 		s.ChannelMessageSend(m.ChannelID, "Ping!")
+	}
+
+	command,query,hasPrefix:=util.ParsePrefix(m.Content)
+	if hasPrefix {
+		fmt.Println("command: ",command,"query: ",query)
 	}
 }
