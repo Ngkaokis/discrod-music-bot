@@ -1,9 +1,14 @@
 package util
 
-import "github.com/spf13/viper"
+import (
+	"log"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	Token_String string `mapstructure:"DISCORD_BOT_TOKEN"`
+	Prefix string `mapstructure:"PREFIX"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -20,4 +25,12 @@ func LoadConfig(path string) (config Config, err error) {
 
 	err = viper.Unmarshal(&config)
 	return 
+}
+
+func Get() (Config) {
+	cfg,err := LoadConfig(".")
+	if(err != nil){
+		log.Fatal(err)
+	}
+	return cfg
 }
