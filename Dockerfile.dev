@@ -8,6 +8,5 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get install -y ffmpeg
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . ./
-RUN make build
 
-CMD ["make", "run"]
+CMD ["make", "dev"]
