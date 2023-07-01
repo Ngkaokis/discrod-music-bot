@@ -1,13 +1,16 @@
-FROM golang:1.20.5
+FROM golang:1.21rc2-alpine3.18 as build
 
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
-RUN apt-get -y update && apt-get -y upgrade && apt-get install -y ffmpeg
-
+RUN apk add --update --no-cache make
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . ./
 RUN make build
+
+FROM alpine as main
+
+COPY --from=build /app/app /
+RUN apk add --update --no-cache ffmpeg make
 
 CMD ["make", "run"]
