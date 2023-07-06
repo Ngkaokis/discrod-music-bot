@@ -34,3 +34,5 @@ func Get() (Config) {
 	}
 	return cfg
 }
+
+var DiscordConfig Config = Get()
