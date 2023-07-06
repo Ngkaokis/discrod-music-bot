@@ -35,7 +35,6 @@ func main() {
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(handler.MessageCreateHandler)
-
 	dg.AddHandler(handler.MusicPlayerHandler)
 
 	// In this example, we only care about receiving message events.
