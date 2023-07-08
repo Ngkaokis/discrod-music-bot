@@ -1,7 +1,7 @@
-package youtube
+package services
 
 import (
-	"discord-bot/core"
+	"discord-bot/types"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -25,7 +25,7 @@ func NewService(maxDurationInSeconds int) *Service {
 	}
 }
 
-func (svc *Service) SearchYTAndDownload(query string) (*core.Media, error) {
+func (svc *Service) SearchYTAndDownload(query string) (*types.Media, error) {
 	timeout := make(chan bool, 1)
 	result := make(chan searchAndDownloadResult, 1)
 	go func() {
@@ -75,7 +75,7 @@ func (svc *Service) doSearchYTAndDownload(query string) searchAndDownloadResult 
 				return searchAndDownloadResult{Error: fmt.Errorf("failed to unmarshal video metadata: %w", err)}
 			}
 			return searchAndDownloadResult{
-				Media: core.NewMedia(
+				Media: types.NewMedia(
 					videoMetadata.Title,
 					videoMetadata.Filename,
 					videoMetadata.Uploader,
@@ -89,7 +89,7 @@ func (svc *Service) doSearchYTAndDownload(query string) searchAndDownloadResult 
 }
 
 type searchAndDownloadResult struct {
-	Media *core.Media
+	Media *types.Media
 	Error error
 }
 
