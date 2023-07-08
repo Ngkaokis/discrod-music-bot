@@ -1,9 +1,4 @@
-package core
-
-import (
-	"fmt"
-	"time"
-)
+package types
 
 // ActiveGuild is a guild that is currently being streamed to.
 type ActiveGuild struct {
@@ -45,48 +40,4 @@ func (g *ActiveGuild) StopStreaming() {
 	close(g.MediaChan)
 	g.MediaChan = nil
 	g.UserActions = nil
-}
-
-type Media struct {
-	Title     string
-	FilePath  string
-	Uploader  string
-	URL       string
-	Thumbnail string
-	Duration  time.Duration
-}
-
-func NewMedia(title, filePath, uploader, url, thumbnail string, durationInSeconds int) *Media {
-	duration, _ := time.ParseDuration(fmt.Sprintf("%ds", durationInSeconds))
-	return &Media{
-		Title:     title,
-		FilePath:  filePath,
-		Uploader:  uploader,
-		URL:       url,
-		Thumbnail: thumbnail,
-		Duration:  duration,
-	}
-}
-
-type UserActions struct {
-	SkipChan chan bool
-	StopChan chan bool
-
-	Stopped bool
-}
-
-func NewActions() *UserActions {
-	return &UserActions{
-		SkipChan: make(chan bool, 1),
-		StopChan: make(chan bool, 1),
-	}
-}
-
-func (a *UserActions) Stop() {
-	a.Stopped = true
-	a.StopChan <- true
-}
-
-func (a *UserActions) Skip() {
-	a.SkipChan <- true
 }
