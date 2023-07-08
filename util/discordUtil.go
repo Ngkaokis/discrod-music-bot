@@ -35,3 +35,18 @@ func ParsePrefix(msg string ) (command string, query string, hasPrefix bool) {
 }
 return "","",false
 }
+
+func GetGuildNameByID(bot *discordgo.Session, guildID string) string {
+	guildName, ok := GuildNames[guildID]
+	if !ok {
+		guild, err := bot.Guild(guildID)
+		if err != nil {
+			// Failed to get the guild? Whatever, we'll just use the guild id
+			GuildNames[guildID] = guildID
+			return guildID
+		}
+		GuildNames[guildID] = guild.Name
+		return guild.Name
+	}
+	return guildName
+}
