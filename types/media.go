@@ -26,17 +26,3 @@ func NewMedia(title, filePath, uploader, url, thumbnail string, durationInSecond
 	}
 }
 
-type UserActions struct {
-	SkipChan chan bool
-	StopChan chan bool
-
-	Stopped bool
-}
-
-func NewActions() *UserActions {
-	return &UserActions{
-		SkipChan: make(chan bool, 1),
-		StopChan: make(chan bool, 1),
-	}
-}
-
