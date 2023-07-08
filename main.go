@@ -12,7 +12,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var (config util.Config)
+var  (
+	config util.Config
+)
+
 
 func init() {
 	var err error
@@ -27,21 +30,21 @@ func main() {
 
 	// Create a new Discord session using the provided bot token.
 
-	dg, err := discordgo.New("Bot " + config.Token_String)
+	bot, err := discordgo.New("Bot " + config.Token_String)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
 
 	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(handler.MessageCreateHandler)
-	dg.AddHandler(handler.MusicPlayerHandler)
+	bot.AddHandler(handler.MessageCreateHandler)
+	bot.AddHandler(handler.MusicPlayerHandler)
 
-	// In this example, we only care about receiving message events.
-	dg.Identify.Intents = discordgo.IntentsGuildMessages + discordgo.IntentsGuildVoiceStates
+	// receiving message events and voice event.
+	bot.Identify.Intents = discordgo.IntentsGuildMessages + discordgo.IntentsGuildVoiceStates
 
 	// Open a websocket connection to Discord and begin listening.
-	err = dg.Open()
+	err = bot.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
 		return
@@ -54,6 +57,6 @@ func main() {
 	<-sc
 
 	// Cleanly close down the Discord session.
-	dg.Close()
+	bot.Close()
 }
 
