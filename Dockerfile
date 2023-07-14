@@ -12,5 +12,7 @@ FROM alpine as main
 
 COPY --from=build /app/app /
 RUN apk add --update --no-cache ffmpeg make
+RUN wget -P /bin https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+RUN chmod a+x /bin/yt-dlp
 
 CMD ["make", "run"]
