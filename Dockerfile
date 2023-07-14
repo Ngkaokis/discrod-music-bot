@@ -1,18 +1,14 @@
-FROM golang:1.21rc2-alpine3.18 as build
+FROM golang:1.20.5
 
 WORKDIR /app
 
-RUN apk add --update --no-cache make
-COPY go.mod go.sum ./
-RUN go mod download
-COPY . ./
-RUN make build
-
-FROM alpine as main
-
-COPY --from=build /app/app /
-RUN apk add --update --no-cache ffmpeg make
+RUN go install github.com/cosmtrek/air@latest
+RUN apt-get -y update && apt-get -y upgrade && apt-get install -y ffmpeg
 RUN wget -P /bin https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
 RUN chmod a+x /bin/yt-dlp
 
-CMD ["make", "run"]
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . ./
+
+CMD ["make", "dev"]
