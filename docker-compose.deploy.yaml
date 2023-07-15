@@ -4,4 +4,5 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.deploy
+    image: ghcr.io/ngkaokis/discord-bot:main
     command: make run
