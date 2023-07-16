@@ -52,7 +52,7 @@ func (svc *Service) doSearchYTAndDownload(query string) searchAndDownloadResult 
 		args := []string{
 			fmt.Sprintf("ytsearch10:%s", strings.ReplaceAll(query, "\"", "")),
 			"--extract-audio",
-			"--audio-format", "opus",
+			"--audio-format", "mp3",
 			"--no-playlist",
 			"--match-filter", fmt.Sprintf("duration < %d & !is_live", svc.maxDurationInSeconds),
 			"--max-downloads", "1",
@@ -77,7 +77,7 @@ func (svc *Service) doSearchYTAndDownload(query string) searchAndDownloadResult 
 			return searchAndDownloadResult{
 				Media: types.NewMedia(
 					videoMetadata.Title,
-					videoMetadata.Filename,
+					videoMetadata.Filename+".mp3",
 					videoMetadata.Uploader,
 					fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoMetadata.ID),
 					videoMetadata.Thumbnail,
@@ -146,7 +146,7 @@ type videoMetadata struct {
 	Fps                  interface{} `json:"fps"`
 	AudioChannels        int         `json:"audio_channels"`
 	Height               interface{} `json:"height"`
-	Quality              int         `json:"quality"`
+	Quality              float64         `json:"quality"`
 	HasDrm               bool        `json:"has_drm"`
 	Tbr                  float64     `json:"tbr"`
 	URL                  string      `json:"url"`
