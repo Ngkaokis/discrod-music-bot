@@ -12,6 +12,6 @@ var  (
 	GuildsMutex = sync.RWMutex{}
 	GuildNames   = make(map[string]string)
 
-	YoutubeService *services.Service
+	YoutubeService = services.NewService(1000)
 
 )
