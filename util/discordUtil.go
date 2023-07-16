@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"errors"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -19,7 +21,8 @@ func SearchVoiceChannel(s *discordgo.Session,m *discordgo.MessageCreate)(voiceCh
 			}
 		
 	}
-	return "",nil
+	err = errors.New("no voice channel found")
+	return "", err
 }
 
 func ParsePrefix(msg string ) (command string, query string, hasPrefix bool) {
