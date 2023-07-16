@@ -2,17 +2,17 @@ package workers
 
 import (
 	"discord-bot/types"
-	"io"
 	"log"
 	"os"
 	"time"
 
+	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
 )
 
 func Worker(bot *discordgo.Session, activeGuild *types.ActiveGuild, guildId, channelId string) error {
 	defer cleanUpGuildWorker(activeGuild)
-	voice, err := bot.ChannelVoiceJoin(guildId, channelId, false, true)
+	voice, err := bot.ChannelVoiceJoin(guildId,channelId , false, true)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func Worker(bot *discordgo.Session, activeGuild *types.ActiveGuild, guildId, cha
 		if !activeGuild.UserActions.Stopped {
 			play(voice, media, activeGuild)
 		}
-		_ = os.Remove(media.FilePath)
+		_ = os.Remove(media.FilePath)	
 		if len(activeGuild.MediaChan) == 0 {
 			break
 		}
@@ -51,7 +51,12 @@ func cleanUpGuildWorker(activeGuild *types.ActiveGuild) {
 }
 
 func play(voice *discordgo.VoiceConnection, media *types.Media, activeGuild *types.ActiveGuild) {
-	// options := dca.StdEncodeOptions
+	
+
+	done := make(chan bool)
+	dgvoice.PlayAudioFile(voice,media.FilePath,done)
+
+// options := dca.StdEncodeOptions
 	// options.BufferedFrames = 100
 	// options.FrameDuration = 20
 	// options.CompressionLevel = 5
@@ -64,24 +69,20 @@ func play(voice *discordgo.VoiceConnection, media *types.Media, activeGuild *typ
 	// }
 	// defer encodeSession.Cleanup()
 
-	// time.Sleep(500 * time.Millisecond)
-
-	done := make(chan error)
+	// time.Sleep(500 * time.Millisecond)	
 	// dca.NewStream(encodeSession, voice, done)
-
-	
-	select {
-	case err := <-done:
-		if err != nil && err != io.EOF {
-			log.Printf("[%s] Error occurred during stream for \"%s\": %s", activeGuild.Name, media.FilePath, err.Error())
-			return
-		}
-	case <-activeGuild.UserActions.SkipChan:
-		log.Printf("[%s] Skipping \"%s\"", activeGuild.Name, media.FilePath)
-		// _ = encodeSession.Stop()
-	case <-activeGuild.UserActions.StopChan:
-		log.Printf("[%s] Stopping", activeGuild.Name)
-		// _ = encodeSession.Stop()
-	}
-	return
+	// select {
+	// case err := <-done:
+	// 	if err != nil && err != io.EOF {
+	// 		log.Printf("[%s] Error occurred during stream for \"%s\": %s", activeGuild.Name, media.FilePath, err.Error())
+	// 		return
+	// 	}
+	// case <-activeGuild.UserActions.SkipChan:
+	// 	log.Printf("[%s] Skipping \"%s\"", activeGuild.Name, media.FilePath)
+	// 	// _ = encodeSession.Stop()
+	// case <-activeGuild.UserActions.StopChan:
+	// 	log.Printf("[%s] Stopping", activeGuild.Name)
+	// 	// _ = encodeSession.Stop()
+	// }
+	// return
 }
