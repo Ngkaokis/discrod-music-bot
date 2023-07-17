@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"discord-bot/types"
+	"discord-bot/models"
 	"discord-bot/util"
 	"discord-bot/workers"
 	"fmt"
@@ -77,7 +77,7 @@ func MusicPlayerHandler(bot *discordgo.Session, message *discordgo.MessageCreate
 }
 
 func handleYoutubeCommand(bot *discordgo.Session,message *discordgo.MessageCreate,
-	activeGuild *types.ActiveGuild,  query string) {
+	activeGuild *models.ActiveGuild,  query string) {
 	
 	//* handle the queue is full
 	if activeGuild != nil{
@@ -87,7 +87,7 @@ func handleYoutubeCommand(bot *discordgo.Session,message *discordgo.MessageCreat
 		}
 	} else {
 		//* If first time to play music, add the guild
-		activeGuild = types.NewActiveGuild(util.GetGuildNameByID(bot, message.GuildID))
+		activeGuild = models.NewActiveGuild(util.GetGuildNameByID(bot, message.GuildID))
 		util.GuildsMutex.Lock()
 		util.Guilds[message.GuildID] = activeGuild
 		util.GuildsMutex.Unlock()

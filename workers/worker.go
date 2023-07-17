@@ -1,7 +1,7 @@
 package workers
 
 import (
-	"discord-bot/types"
+	"discord-bot/models"
 	"log"
 	"os"
 	"time"
@@ -10,7 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func Worker(bot *discordgo.Session, activeGuild *types.ActiveGuild, guildId, channelId string) error {
+func Worker(bot *discordgo.Session, activeGuild *models.ActiveGuild, guildId, channelId string) error {
 	defer cleanUpGuildWorker(activeGuild)
 	voice, err := bot.ChannelVoiceJoin(guildId,channelId , false, true)
 	if err != nil {
@@ -44,13 +44,13 @@ func Worker(bot *discordgo.Session, activeGuild *types.ActiveGuild, guildId, cha
 	return nil
 }
 
-func cleanUpGuildWorker(activeGuild *types.ActiveGuild) {
+func cleanUpGuildWorker(activeGuild *models.ActiveGuild) {
 	log.Printf("[%s] Cleaning up before destroying worker", activeGuild.Name)
 	activeGuild.StopStreaming()
 	log.Printf("[%s] Cleaned up all channels successfully", activeGuild.Name)
 }
 
-func play(voice *discordgo.VoiceConnection, media *types.Media, activeGuild *types.ActiveGuild) {
+func play(voice *discordgo.VoiceConnection, media *models.Media, activeGuild *models.ActiveGuild) {
 	
 
 	done := make(chan bool)

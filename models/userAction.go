@@ -1,4 +1,4 @@
-package types
+package models
 
 type UserActions struct {
 	SkipChan chan bool

@@ -1,4 +1,4 @@
-package types
+package models
 
 // ActiveGuild is a guild that is currently being streamed to.
 type ActiveGuild struct {
