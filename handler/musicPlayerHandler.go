@@ -15,34 +15,6 @@ import (
 
 func MusicPlayerHandler(bot *discordgo.Session, message *discordgo.MessageCreate) {
 
-	
-	if message.Content == "Play" {
-		
-		fmt.Println("working")
-	
-		//find the voice channel of user
-		voiceChannel,err := util.SearchVoiceChannel(bot , message)
-		if err != nil {
-			bot.ChannelMessageSend(message.ChannelID, "OwO Please join the voice channel OwO")
-			fmt.Println("Can't find the voice channel",err)
-			return
-		}
-			
-		fmt.Println("This is voice Channel:",voiceChannel )
-		
-		
-		
-		vc ,err :=bot.ChannelVoiceJoin(message.GuildID,voiceChannel,false,true)
-		if err != nil {
-			fmt.Println("Can't join the channel:",err)
-			return
-		}
-		
-		
-		// dgvoice.PlayAudioFile(vc,"",make(chan bool))
-		// defer  vc.Disconnect()
-	}
-	
 	// Ignore all messages created by the bot itself
 	if message.Author.ID == bot.State.User.ID {
 		return
