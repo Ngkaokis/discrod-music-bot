@@ -5,12 +5,16 @@ go 1.20
 require (
 	github.com/bwmarrin/dgvoice v0.0.0-20210225172318-caaac756e02e
 	github.com/bwmarrin/discordgo v0.27.1
+	github.com/disgoorg/disgolink/v3 v3.0.0-20230810103102-c572e085fba1
 	github.com/spf13/viper v1.16.0
 )
 
 require (
+	github.com/disgoorg/json v1.1.0 // indirect
+	github.com/disgoorg/log v1.2.1 // indirect
+	github.com/disgoorg/snowflake/v2 v2.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
