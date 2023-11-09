@@ -11,3 +11,18 @@ services:
     # Important to bind/mount your codebase dir to /app dir for live reload
     volumes:
       - ./:/app
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:3.7 # pin the image version to Lavalink v4
+    container_name: lavalink
+    env_file:
+      - .lavalink.env.dev
+    environment:
+      - _JAVA_OPTIONS=-Xmx6G # set Java options here
+      - SERVER_PORT=2333 # set lavalink server port
+    volumes:
+      - ./application.yml:/opt/Lavalink/application.yml # mount application.yml from the same directory or use environment variables
+      - ./plugins/:/opt/Lavalink/plugins/ # persist plugins between restarts, make sure to set the correct permissions (user: 322, group: 322)
+    expose:
+      - 2333 # lavalink exposes port 2333 to connect to for other containers (this is for documentation purposes only)
+    ports:
+      - 2333:2333 # you only need this if you want to make your lavalink accessible from outside of containers
