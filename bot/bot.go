@@ -1,9 +1,12 @@
 package bot
 
 import (
+	"context"
 	"discord-bot/handler"
 	"discord-bot/models"
+	"discord-bot/util"
 	"log"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/disgoorg/disgolink/v3/disgolink"
@@ -17,16 +20,32 @@ type Bot struct {
 	Queues   models.QueueManager
 }
 
-func New(session *discordgo.Session) (*Bot, error) {
+func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 	// Open a websocket connection to Discord and begin listening.
-  err := session.Open()
+	err := session.Open()
 	if err != nil {
 		log.Fatal("error opening connection,", err)
-    return nil, err
+		return nil, err
 	}
 	registerCommands(session)
 	queueManager := models.NewQueueManger()
 	lavalinkClient := disgolink.New(snowflake.MustParse(session.State.User.ID))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	node, err := lavalinkClient.AddNode(ctx, disgolink.NodeConfig{
+		Name:     "discord bot",
+		Address:  config.LavalinkNodeAddress,
+		Password: config.LavalinkPassword,
+		Secure:   false,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	version, err := node.Version(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("node version: %s", version)
 	handlers := map[string]handler.CommandHandler{
 		"play": nil,
 	}
@@ -38,7 +57,7 @@ func New(session *discordgo.Session) (*Bot, error) {
 			log.Printf("unknown command: %s", data.Name)
 			return
 		}
-    log.Printf("Received command %s", data.Name)
+		log.Printf("Received command %s", data.Name)
 		if err := handler.Handle(session, event, data); err != nil {
 			log.Printf("error handling command: %+v", err)
 		}

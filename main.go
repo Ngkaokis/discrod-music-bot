@@ -32,10 +32,10 @@ func main() {
 		return
 	}
 
-	b, err := bot.New(session)
+	b, err := bot.New(session, config)
 	if err != nil {
 		log.Fatal("Can not start the bot")
-    return
+		return
 	}
 
 	// receiving message events and voice event.

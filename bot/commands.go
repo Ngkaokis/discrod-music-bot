@@ -75,12 +75,12 @@ var commands = []*discordgo.ApplicationCommand{
 }
 
 func registerCommands(s *discordgo.Session) {
-  c, err := s.ApplicationCommandBulkOverwrite(s.State.User.ID, "", commands);
+	c, err := s.ApplicationCommandBulkOverwrite(s.State.User.ID, "", commands)
 	if err != nil {
 		log.Warn(err)
-    return
+		return
 	}
-  for i := range c {
-    log.Info("Registered command: ", c[i].Name)
-  }
+	for i := range c {
+		log.Info("Registered command: ", c[i].Name)
+	}
 }

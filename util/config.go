@@ -8,7 +8,9 @@ import (
 
 type Config struct {
 	Token_String string `mapstructure:"DISCORD_BOT_TOKEN"`
-	Prefix string `mapstructure:"PREFIX"`
+	Prefix       string `mapstructure:"PREFIX"`
+  LavalinkPassword string `mapstructure:"LAVALINK_PASSWORD"`
+  LavalinkNodeAddress string `mapstructure:"LAVALINK_NODE_ADDRESS"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -16,7 +18,6 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.SetConfigName("bot")
 	viper.SetConfigType("env")
 
-	
 	viper.AutomaticEnv()
 	err = viper.ReadInConfig()
 	if err != nil {
@@ -24,15 +25,16 @@ func LoadConfig(path string) (config Config, err error) {
 	}
 
 	err = viper.Unmarshal(&config)
-	return 
+	return
 }
 
-func Get() (Config) {
-	cfg,err := LoadConfig(".")
-	if(err != nil){
+func Get() Config {
+	cfg, err := LoadConfig(".")
+	if err != nil {
 		log.Fatal(err)
 	}
 	return cfg
 }
 
 var DiscordConfig Config = Get()
+
