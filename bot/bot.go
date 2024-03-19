@@ -3,6 +3,7 @@ package bot
 import (
 	"context"
 	"discord-bot/handler"
+	"discord-bot/handler/music"
 	"discord-bot/models"
 	"discord-bot/util"
 	"log"
@@ -47,7 +48,10 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 	}
 	log.Printf("node version: %s", version)
 	handlers := map[string]handler.CommandHandler{
-		"play": nil,
+		"play": &music.MusicPlayHandler{
+			Lavalink:     lavalinkClient,
+			QueueManager: queueManager,
+		},
 	}
 	session.AddHandler(func(session *discordgo.Session, event *discordgo.InteractionCreate) {
 		data := event.ApplicationCommandData()
