@@ -2,6 +2,7 @@ package bot
 
 import (
 	"discord-bot/handler"
+	"discord-bot/models"
 	"log"
 
 	"github.com/bwmarrin/discordgo"
@@ -13,6 +14,7 @@ type Bot struct {
 	Session  *discordgo.Session
 	Lavalink disgolink.Client
 	Handlers map[string]handler.CommandHandler
+	Queues   models.QueueManager
 }
 
 func New(session *discordgo.Session) (*Bot, error) {
@@ -23,6 +25,7 @@ func New(session *discordgo.Session) (*Bot, error) {
     return nil, err
 	}
 	registerCommands(session)
+	queueManager := models.NewQueueManger()
 	lavalinkClient := disgolink.New(snowflake.MustParse(session.State.User.ID))
 	handlers := map[string]handler.CommandHandler{
 		"play": nil,
@@ -44,6 +47,7 @@ func New(session *discordgo.Session) (*Bot, error) {
 		Session:  session,
 		Lavalink: lavalinkClient,
 		Handlers: handlers,
+		Queues:   *queueManager,
 	}
 	return bot, nil
 }
