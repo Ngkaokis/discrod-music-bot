@@ -6,3 +6,15 @@ services:
       dockerfile: Dockerfile.deploy
     image: ghcr.io/ngkaokis/discord-bot:main
     command: make run
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    container_name: lavalink
+    env_file:
+      - .lavalink.env.deploy
+    environment:
+      - _JAVA_OPTIONS=-Xmx6G
+      - SERVER_PORT=2333
+    volumes:
+      - ./plugins/:/opt/Lavalink/plugins/ # persist plugins between restarts, make sure to set the correct permissions (user: 322, group: 322)
+    ports:
+      - 2333:2333 # you only need this if you want to make your lavalink accessible from outside of containers
