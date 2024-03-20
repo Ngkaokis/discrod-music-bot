@@ -5,17 +5,17 @@ import (
 	"discord-bot/handler"
 	"discord-bot/handler/music"
 	"discord-bot/models"
+	"discord-bot/services"
 	"discord-bot/util"
 	"log"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/disgoorg/disgolink/v3/disgolink"
 	"github.com/disgoorg/snowflake/v2"
 )
 
 type Bot struct {
 	Session  *discordgo.Session
-	Lavalink disgolink.Client
+	Lavalink *services.Lavalink
 	Handlers map[string]handler.CommandHandler
 	Queues   models.QueueManager
 }
@@ -29,25 +29,25 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 	}
 	registerCommands(session)
 	queueManager := models.NewQueueManger()
-	lavalinkClient, err := registerLavalink(session, config)
-  if err != nil {
-    log.Fatal(err)
-  }
+	lavalink, err := services.NewLavaLinkService(session, config)
+	if err != nil {
+		log.Fatal(err)
+	}
 	handlers := map[string]handler.CommandHandler{
 		"play": &music.MusicPlayHandler{
-			Lavalink:     lavalinkClient,
+			Lavalink:     lavalink,
 			QueueManager: queueManager,
 		},
 	}
 	bot := &Bot{
 		Session:  session,
-		Lavalink: lavalinkClient,
+		Lavalink: lavalink,
 		Handlers: handlers,
 		Queues:   *queueManager,
 	}
-  bot.Session.AddHandler(bot.onApplicationCommand)
-  bot.Session.AddHandler(bot.onVoiceStateUpdate)
-  bot.Session.AddHandler(bot.onVoiceServerUpdate)
+	bot.Session.AddHandler(bot.onApplicationCommand)
+	bot.Session.AddHandler(bot.onVoiceStateUpdate)
+	bot.Session.AddHandler(bot.onVoiceServerUpdate)
 	return bot, nil
 }
 
@@ -74,12 +74,12 @@ func (b *Bot) onVoiceStateUpdate(session *discordgo.Session, event *discordgo.Vo
 		id := snowflake.MustParse(event.ChannelID)
 		channelID = &id
 	}
-	b.Lavalink.OnVoiceStateUpdate(context.TODO(), snowflake.MustParse(event.GuildID), channelID, event.SessionID)
+	b.Lavalink.Client.OnVoiceStateUpdate(context.TODO(), snowflake.MustParse(event.GuildID), channelID, event.SessionID)
 	if event.ChannelID == "" {
 		b.Queues.Delete(event.GuildID)
 	}
 }
 
 func (b *Bot) onVoiceServerUpdate(_ *discordgo.Session, event *discordgo.VoiceServerUpdate) {
-	b.Lavalink.OnVoiceServerUpdate(context.TODO(), snowflake.MustParse(event.GuildID), event.Token, event.Endpoint)
+	b.Lavalink.Client.OnVoiceServerUpdate(context.TODO(), snowflake.MustParse(event.GuildID), event.Token, event.Endpoint)
 }

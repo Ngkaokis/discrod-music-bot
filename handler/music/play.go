@@ -3,6 +3,7 @@ package music
 import (
 	"context"
 	"discord-bot/models"
+	"discord-bot/services"
 	"discord-bot/util"
 	"fmt"
 	"time"
@@ -14,11 +15,10 @@ import (
 	"github.com/disgoorg/snowflake/v2"
 )
 
-
 type MusicPlayHandler struct {
-  	Lavalink disgolink.Client
-    QueueManager   *models.QueueManager
-} 
+	Lavalink     *services.Lavalink
+	QueueManager *models.QueueManager
+}
 
 func (handler MusicPlayHandler) Handle(session *discordgo.Session, event *discordgo.InteractionCreate, data discordgo.ApplicationCommandInteractionData) error {
 	identifier := data.Options[0].StringValue()
@@ -42,14 +42,14 @@ func (handler MusicPlayHandler) Handle(session *discordgo.Session, event *discor
 		return err
 	}
 
-	player := handler.Lavalink.Player(snowflake.MustParse(event.GuildID))
+	player := handler.Lavalink.Client.Player(snowflake.MustParse(event.GuildID))
 	queue := handler.QueueManager.Get(event.GuildID)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	var toPlay *lavalink.Track
-	handler.Lavalink.BestNode().LoadTracksHandler(ctx, identifier, disgolink.NewResultHandler(
+	handler.Lavalink.Client.BestNode().LoadTracksHandler(ctx, identifier, disgolink.NewResultHandler(
 		func(track lavalink.Track) {
 			_, _ = session.InteractionResponseEdit(event.Interaction, &discordgo.WebhookEdit{
 				Content: json.Ptr(fmt.Sprintf("Loading track: [`%s`](<%s>)", track.Info.Title, *track.Info.URI)),

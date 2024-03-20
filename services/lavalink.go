@@ -1,4 +1,4 @@
-package bot
+package services
 
 import (
 	"context"
@@ -11,7 +11,11 @@ import (
 	"github.com/disgoorg/snowflake/v2"
 )
 
-func registerLavalink (session *discordgo.Session, config util.Config) (disgolink.Client, error) {
+type Lavalink struct {
+	Client disgolink.Client
+}
+
+func NewLavaLinkService(session *discordgo.Session, config util.Config) (*Lavalink, error) {
 	lavalinkClient := disgolink.New(snowflake.MustParse(session.State.User.ID))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -22,12 +26,14 @@ func registerLavalink (session *discordgo.Session, config util.Config) (disgolin
 		Secure:   false,
 	})
 	if err != nil {
-    return nil, err
+		return nil, err
 	}
 	version, err := node.Version(ctx)
 	if err != nil {
-    return nil, err
+		return nil, err
 	}
 	log.Printf("node version: %s", version)
-  return lavalinkClient, nil
+	return &Lavalink{
+		Client: lavalinkClient,
+	}, nil
 }
