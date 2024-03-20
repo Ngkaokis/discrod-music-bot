@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile.deploy
     image: ghcr.io/ngkaokis/discord-bot:main
     command: make run
+    depends_on:
+      - lavalink
   lavalink:
     image: ghcr.io/lavalink-devs/lavalink:4
     container_name: lavalink
