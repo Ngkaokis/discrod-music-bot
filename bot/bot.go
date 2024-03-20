@@ -14,10 +14,10 @@ import (
 )
 
 type Bot struct {
-	Session  *discordgo.Session
-	Lavalink *services.Lavalink
-	Handlers map[string]handler.CommandHandler
-	Queues   models.QueueManager
+	Session      *discordgo.Session
+	Lavalink     *services.Lavalink
+	Handlers     map[string]handler.CommandHandler
+	QueueManager *models.QueueManager
 }
 
 func New(session *discordgo.Session, config util.Config) (*Bot, error) {
@@ -29,7 +29,7 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 	}
 	registerCommands(session)
 	queueManager := models.NewQueueManger()
-	lavalink, err := services.NewLavaLinkService(session, config)
+	lavalink, err := services.NewLavaLinkService(session, queueManager, config)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,10 +40,10 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 		},
 	}
 	bot := &Bot{
-		Session:  session,
-		Lavalink: lavalink,
-		Handlers: handlers,
-		Queues:   *queueManager,
+		Session:      session,
+		Lavalink:     lavalink,
+		Handlers:     handlers,
+		QueueManager: queueManager,
 	}
 	bot.Session.AddHandler(bot.onApplicationCommand)
 	bot.Session.AddHandler(bot.onVoiceStateUpdate)
@@ -76,7 +76,7 @@ func (b *Bot) onVoiceStateUpdate(session *discordgo.Session, event *discordgo.Vo
 	}
 	b.Lavalink.Client.OnVoiceStateUpdate(context.TODO(), snowflake.MustParse(event.GuildID), channelID, event.SessionID)
 	if event.ChannelID == "" {
-		b.Queues.Delete(event.GuildID)
+		b.QueueManager.Delete(event.GuildID)
 	}
 }
 
