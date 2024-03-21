@@ -44,6 +44,9 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 		"stop": &music.StopHandler{
 			Lavalink: lavalink,
 		},
+		"shuffle": &music.ShuffleHandler{
+			QueueMananger: queueManager,
+		},
 	}
 	bot := &Bot{
 		Session:      session,
