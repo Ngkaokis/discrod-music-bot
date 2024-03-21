@@ -38,6 +38,9 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 			Lavalink:     lavalink,
 			QueueManager: queueManager,
 		},
+		"pause": &music.MusicPauseHandler{
+			Lavalink: lavalink,
+		},
 	}
 	bot := &Bot{
 		Session:      session,
