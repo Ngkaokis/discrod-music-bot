@@ -53,6 +53,9 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 		"clearQueue": &music.ClearQueueHandler{
 			QueueMananger: queueManager,
 		},
+		"queueType": &music.QueueTypeHandler{
+			QueueMananger: queueManager,
+		},
 	}
 	bot := &Bot{
 		Session:      session,
