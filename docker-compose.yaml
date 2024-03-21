@@ -10,7 +10,8 @@ services:
     volumes:
       - ./:/app
     depends_on:
-      - lavalink
+      lavalink:
+        condition: service_healthy
   lavalink:
     image: ghcr.io/lavalink-devs/lavalink:4
     container_name: lavalink
@@ -23,6 +24,12 @@ services:
       - ./plugins/:/opt/Lavalink/plugins/ # persist plugins between restarts, make sure to set the correct permissions (user: 322, group: 322)
     ports:
       - 2333:2333 # you only need this if you want to make your lavalink accessible from outside of containers
+    healthcheck:
+      test: 'curl --header "Authorization: $$LAVALINK_SERVER_PASSWORD" http://localhost:2333/v4/stats'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
   netdata:
     image: netdata/netdata:stable
     container_name: netdata
