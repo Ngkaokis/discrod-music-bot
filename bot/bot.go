@@ -34,7 +34,7 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 		log.Fatal(err)
 	}
 	handlers := map[string]handler.CommandHandler{
-		"play": &music.MusicPlayHandler{
+		"play": &music.PlayHandler{
 			Lavalink:     lavalink,
 			QueueManager: queueManager,
 		},

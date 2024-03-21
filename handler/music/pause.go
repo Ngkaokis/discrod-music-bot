@@ -11,11 +11,11 @@ import (
 	"github.com/disgoorg/snowflake/v2"
 )
 
-type MusicPauseHandler struct {
+type PauseHandler struct {
 	Lavalink *services.Lavalink
 }
 
-func (h MusicPauseHandler) Handle(session *discordgo.Session, event *discordgo.InteractionCreate, data discordgo.ApplicationCommandInteractionData) error {
+func (h PauseHandler) Handle(session *discordgo.Session, event *discordgo.InteractionCreate, data discordgo.ApplicationCommandInteractionData) error {
 	player := h.Lavalink.Client.ExistingPlayer(snowflake.MustParse(event.GuildID))
 	if player == nil {
 		return handler.RespondWithContent(session, event.Interaction, "No player found")

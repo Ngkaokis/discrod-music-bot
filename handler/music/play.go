@@ -15,12 +15,12 @@ import (
 	"github.com/disgoorg/snowflake/v2"
 )
 
-type MusicPlayHandler struct {
+type PlayHandler struct {
 	Lavalink     *services.Lavalink
 	QueueManager *models.QueueManager
 }
 
-func (handler MusicPlayHandler) Handle(session *discordgo.Session, event *discordgo.InteractionCreate, data discordgo.ApplicationCommandInteractionData) error {
+func (handler PlayHandler) Handle(session *discordgo.Session, event *discordgo.InteractionCreate, data discordgo.ApplicationCommandInteractionData) error {
 	identifier := data.Options[0].StringValue()
 	if !util.UrlPattern.MatchString(identifier) && !util.SearchPattern.MatchString(identifier) {
 		identifier = lavalink.SearchTypeYouTube.Apply(identifier)
