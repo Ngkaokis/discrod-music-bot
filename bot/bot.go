@@ -47,6 +47,9 @@ func New(session *discordgo.Session, config util.Config) (*Bot, error) {
 		"shuffle": &music.ShuffleHandler{
 			QueueMananger: queueManager,
 		},
+		"queue": &music.QueueHandler{
+			QueueMananger: queueManager,
+		},
 	}
 	bot := &Bot{
 		Session:      session,
