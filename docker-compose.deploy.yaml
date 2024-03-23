@@ -1,6 +1,8 @@
 version: "3.8"
 services:
   app:
+    profiles:
+      - bot
     build:
       context: .
       dockerfile: Dockerfile.deploy
@@ -10,6 +12,8 @@ services:
       lavalink:
         condition: service_healthy
   lavalink:
+    profiles:
+      - bot
     image: ghcr.io/lavalink-devs/lavalink:4
     container_name: lavalink
     env_file:
@@ -28,6 +32,8 @@ services:
       retries: 3
       start_period: 5s
   netdata:
+    profiles:
+      - monitoring
     image: netdata/netdata:stable
     container_name: netdata
     pid: host
