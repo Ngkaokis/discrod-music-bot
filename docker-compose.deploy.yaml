@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile.deploy
     image: ghcr.io/ngkaokis/discord-bot:main
     command: make run
+    restart: always
     depends_on:
       lavalink:
         condition: service_healthy
@@ -16,6 +17,7 @@ services:
       - bot
     image: ghcr.io/lavalink-devs/lavalink:4
     container_name: lavalink
+    restart: always
     env_file:
       - .lavalink.env.deploy
     environment:

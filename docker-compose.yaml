@@ -7,6 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: make dev
+    restart: always
     ports:
       - 8080:3000
     volumes:
@@ -19,6 +20,7 @@ services:
       - bot
     image: ghcr.io/lavalink-devs/lavalink:4
     container_name: lavalink
+    restart: always
     env_file:
       - .lavalink.env.dev
     environment:
