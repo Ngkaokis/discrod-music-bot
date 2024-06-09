@@ -13,6 +13,6 @@ FROM debian:12.0 as main
 COPY --from=build /app/app /
 COPY --from=build /app/Makefile /
 COPY --from=build /app/.bot.env.deploy /bot.env
-RUN apt-get update && apt-get install -y make
+RUN apt-get update && apt-get install -y make ca-certificates
 
 CMD ["make", "run"]
